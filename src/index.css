@@ -1,0 +1,163 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@theme {
+  --font-display: "Bricolage Grotesque", sans-serif;
+  --font-sans: "DM Sans", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-bg-base: #0F1115; /* Charcoal Gray */
+  --color-bg-surface: #16191E;
+  --color-bg-elevated: #1C2128;
+  --color-bg-border: rgba(255, 255, 255, 0.08);
+
+  --color-text-primary: #F8FAFC;
+  --color-text-secondary: #94A3B8;
+  --color-text-muted: #64748B;
+
+  --color-accent-primary: #FFD700; /* Gold */
+  --color-accent-success: #10B981;
+  --color-accent-warning: #F59E0B;
+  --color-accent-danger: #EF4444;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+
+  --shadow-card: 0 4px 24px -1px rgba(0, 0, 0, 0.3), 0 2px 16px -1px rgba(0, 0, 0, 0.2);
+  --shadow-elevated: 0 20px 48px -12px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 40px rgba(255, 215, 0, 0.15);
+
+  --animate-fade-up: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@layer base {
+  body {
+    @apply bg-bg-base text-text-secondary font-sans antialiased selection:bg-accent-primary/30;
+    position: relative;
+    overflow-x: hidden;
+    /* Dark Liquid Mesh Gradient */
+    background: 
+      radial-gradient(at 0% 0%, rgba(255, 215, 0, 0.08) 0px, transparent 50%),
+      radial-gradient(at 50% 0%, rgba(124, 58, 237, 0.05) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.05) 0px, transparent 50%),
+      #0F1115;
+  }
+
+  /* Liquid Background Blobs */
+  .liquid-blob {
+    content: "";
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(100px);
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.4;
+    mix-blend-mode: screen;
+  }
+
+  .blob-1 {
+    width: 900px;
+    height: 900px;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.15) 0%, transparent 70%);
+    top: -15%;
+    left: -10%;
+    animation: liquid-1 30s infinite alternate ease-in-out;
+  }
+
+  .blob-2 {
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.1) 0%, transparent 70%);
+    bottom: -15%;
+    right: -10%;
+    animation: liquid-2 35s infinite alternate ease-in-out;
+  }
+
+  .blob-3 {
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+    top: 30%;
+    right: 10%;
+    animation: liquid-3 25s infinite alternate ease-in-out;
+    opacity: 0.15;
+  }
+
+  /* Grainy Texture Overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    opacity: 0.03;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display text-text-primary font-bold tracking-tight;
+  }
+}
+
+@keyframes liquid-1 {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(100px, 150px) scale(1.2); }
+  66% { transform: translate(-50px, 300px) scale(0.8); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+@keyframes liquid-2 {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-150px, -100px) scale(1.1); }
+  66% { transform: translate(100px, -250px) scale(0.9); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+@keyframes liquid-3 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-100px, 100px) scale(1.2); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+.glass {
+  @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.2)];
+}
+
+.glass-dark {
+  @apply bg-white/5 backdrop-blur-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)];
+}
+
+.glass-gold {
+  @apply bg-accent-primary/5 backdrop-blur-xl border border-accent-primary/20 shadow-[0_8px_32px_rgba(255,215,0,0.05)];
+}
+
+.gradient-hero {
+  background: radial-gradient(circle at top center, rgba(255, 215, 0, 0.15), transparent 70%);
+}
+
+.gradient-card {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.01) 0%, transparent 100%);
+}
+
+.gradient-accent {
+  background: linear-gradient(135deg, #FFD700, #B8860B);
+}
+
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-[#FFD700] to-[#B8860B];
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-bg-base;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-bg-border rounded-full hover:bg-text-muted transition-colors;
+}
