@@ -9,6 +9,9 @@ import DashboardPage from './pages/DashboardPage.tsx';
 import CourseDetailPage from './pages/CourseDetailPage.tsx';
 import RoadmapsPage from './pages/RoadmapsPage.tsx';
 import RoadmapDetailPage from './pages/RoadmapDetailPage.tsx';
+import LoginPage from './pages/LoginPage.tsx';
+import SignupPage from './pages/SignupPage.tsx';
+import VerifyEmailPage from './pages/VerifyEmailPage.tsx';
 import './index.css';
 
 const queryClient = new QueryClient();
@@ -25,9 +28,12 @@ createRoot(document.getElementById('root')!).render(
             <Route path="roadmaps" element={<RoadmapsPage />} />
             <Route path="roadmaps/:slug" element={<RoadmapDetailPage />} />
             <Route path="dashboard" element={<DashboardPage />} />
-            <Route path="login" element={<div className="pt-24 px-8 text-white">Login Page (Coming Soon)</div>} />
-            <Route path="signup" element={<div className="pt-24 px-8 text-white">Signup Page (Coming Soon)</div>} />
           </Route>
+          
+          {/* Auth Routes (No Navbar/Sidebar) */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/verify-email" element={<VerifyEmailPage />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>

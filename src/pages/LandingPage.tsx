@@ -176,9 +176,11 @@ export default function LandingPage() {
                 key={i}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                whileHover={{ y: -10, scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: i * 0.1 }}
-                className="p-10 rounded-[2.5rem] bg-white/5 border border-white/5 hover:border-accent-primary/30 hover:shadow-xl transition-all duration-500 group"
+                className="p-10 rounded-[2.5rem] bg-white/5 border border-white/5 hover:border-accent-primary/30 hover:shadow-xl transition-all duration-500 group cursor-pointer"
               >
                 <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-sm", feature.bg, feature.color)}>
                   <feature.icon className="w-7 h-7" />
@@ -210,9 +212,11 @@ export default function LandingPage() {
                 key={roadmap.id}
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
+                whileHover={{ y: -10, scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: i * 0.1 }}
-                className="group p-8 rounded-[2.5rem] bg-bg-elevated border border-white/5 hover:border-accent-primary/30 hover:shadow-2xl transition-all duration-500"
+                className="group p-8 rounded-[2.5rem] bg-bg-elevated border border-white/5 hover:border-accent-primary/30 hover:shadow-2xl transition-all duration-500 cursor-pointer"
               >
                 <div className="flex items-center justify-between mb-8">
                   <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-accent-primary border border-white/5 shadow-sm group-hover:bg-accent-primary group-hover:text-black transition-all duration-500">

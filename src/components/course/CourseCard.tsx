@@ -7,6 +7,8 @@ import { cn, formatDuration, formatPrice, truncate } from '../../lib/utils';
 import { RatingStars } from '../shared/RatingStars';
 import { ProviderLogo } from '../shared/ProviderLogo';
 
+import { CourseThumbnail } from './CourseThumbnail';
+
 interface CourseCardProps {
   key?: string | number;
   course: Course;
@@ -15,35 +17,21 @@ interface CourseCardProps {
   onBookmarkToggle?: (id: string) => void;
 }
 
-const CATEGORY_FALLBACKS: Record<string, string> = {
-  'Development': 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800&h=450',
-  'Design': 'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&q=80&w=800&h=450',
-  'Data Science': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800&h=450',
-  'Business': 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800&h=450',
-  'Marketing': 'https://images.unsplash.com/photo-1533750349088-cd871a92f312?auto=format&fit=crop&q=80&w=800&h=450',
-  'Personal Development': 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&q=80&w=800&h=450',
-};
-
-const DEFAULT_FALLBACK = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=800&h=450';
-
 export function CourseCard({ course, isBookmarked, completionPercent, onBookmarkToggle }: CourseCardProps) {
-  const [imageError, setImageError] = useState(false);
-  const fallbackImage = CATEGORY_FALLBACKS[course.category] || DEFAULT_FALLBACK;
-
   return (
     <motion.div
       whileHover={{ y: -8, scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
       className="group relative flex flex-col glass-dark rounded-[2.5rem] overflow-hidden hover:border-accent-primary/40 hover:shadow-[0_20px_50px_rgba(255,215,0,0.15)] transition-all duration-700"
     >
       <Link to={`/course/${course.id}`} className="flex-1 flex flex-col">
         {/* Thumbnail */}
         <div className="relative aspect-video overflow-hidden">
-          <img
-            src={imageError ? fallbackImage : (course.thumbnail || fallbackImage)}
+          <CourseThumbnail
+            src={course.thumbnail}
             alt={course.title}
-            onError={() => setImageError(true)}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out"
-            referrerPolicy="no-referrer"
+            category={course.category}
+            className="group-hover:scale-110 transition-transform duration-1000 ease-out"
           />
           
           {/* Liquid Overlay on Hover */}

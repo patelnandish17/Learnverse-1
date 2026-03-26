@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { ROADMAPS, MOCK_COURSES } from '../lib/constants';
 import { cn } from '../lib/utils';
+import { CourseThumbnail } from '../components/course/CourseThumbnail';
 
 export default function RoadmapDetailPage() {
   const { slug } = useParams();
@@ -111,14 +112,13 @@ export default function RoadmapDetailPage() {
                       to={`/course/${course.id}`}
                       className="group p-5 rounded-2xl bg-bg-surface border border-bg-border hover:border-accent-primary transition-all duration-300 flex gap-5"
                     >
-                      <div className="w-32 h-20 rounded-lg overflow-hidden shrink-0 border border-bg-border">
-                        <img 
-                          src={course.thumbnail} 
-                          alt={course.title} 
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                          referrerPolicy="no-referrer"
-                        />
-                      </div>
+                      <CourseThumbnail
+                        src={course.thumbnail}
+                        alt={course.title}
+                        category={course.category}
+                        containerClassName="w-32 h-20 rounded-lg shrink-0 border border-bg-border"
+                        className="group-hover:scale-110 transition-transform duration-500"
+                      />
                       <div className="flex-1">
                         <h4 className="text-sm font-bold text-text-primary mb-1 group-hover:text-accent-primary transition-colors line-clamp-1">
                           {course.title}

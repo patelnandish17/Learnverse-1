@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { Navbar } from './components/layout/Navbar';
 import { Sidebar } from './components/layout/Sidebar';
 import { Footer } from './components/layout/Footer';
+import { ChatWidget } from './components/chat/ChatWidget';
 import { useUIStore } from './store/uiStore';
 import { cn } from './lib/utils';
 
@@ -28,6 +29,8 @@ export default function App() {
       <div className="lg:pl-80 pr-6 lg:pr-12">
         <Footer />
       </div>
+
+      <ChatWidget />
     </div>
   );
 }

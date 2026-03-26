@@ -38,15 +38,20 @@ export function Sidebar() {
             key={item.name}
             to={item.href}
             onClick={() => setSidebarOpen(false)}
-            className={cn(
-              'flex items-center gap-4 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all duration-500',
-              location.pathname === item.href
-                ? 'bg-accent-primary text-black shadow-[0_10px_30px_rgba(255,215,0,0.3)]'
-                : 'text-text-secondary hover:bg-white/5 hover:text-text-primary'
-            )}
           >
-            <item.icon className={cn("w-5 h-5", location.pathname === item.href ? "text-black" : "text-text-muted")} />
-            {item.name}
+            <motion.div
+              whileHover={{ x: 5, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className={cn(
+                'flex items-center gap-4 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all duration-500',
+                location.pathname === item.href
+                  ? 'bg-accent-primary text-black shadow-[0_10px_30px_rgba(255,215,0,0.3)]'
+                  : 'text-text-secondary hover:bg-white/5 hover:text-text-primary'
+              )}
+            >
+              <item.icon className={cn("w-5 h-5", location.pathname === item.href ? "text-black" : "text-text-muted")} />
+              {item.name}
+            </motion.div>
           </Link>
         ))}
       </nav>
@@ -57,16 +62,25 @@ export function Sidebar() {
             key={item.name}
             to={item.href}
             onClick={() => setSidebarOpen(false)}
-            className="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-sm font-bold text-text-secondary hover:bg-white/5 hover:text-text-primary transition-all duration-500"
           >
-            <item.icon className="w-5 h-5 text-text-muted" />
-            {item.name}
+            <motion.div
+              whileHover={{ x: 5, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex items-center gap-4 px-4 py-3.5 rounded-2xl text-sm font-bold text-text-secondary hover:bg-white/5 hover:text-text-primary transition-all duration-500"
+            >
+              <item.icon className="w-5 h-5 text-text-muted" />
+              {item.name}
+            </motion.div>
           </Link>
         ))}
-        <button className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl text-sm font-bold text-accent-danger hover:bg-accent-danger/10 transition-all duration-500">
+        <motion.button 
+          whileHover={{ x: 5, scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl text-sm font-bold text-accent-danger hover:bg-accent-danger/10 transition-all duration-500"
+        >
           <LogOut className="w-5 h-5" />
           Logout
-        </button>
+        </motion.button>
       </div>
     </div>
   );

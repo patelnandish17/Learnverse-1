@@ -4,11 +4,13 @@ import { MOCK_COURSES, CATEGORIES, PROVIDERS } from '../lib/constants';
 import { CourseCard } from '../components/course/CourseCard';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
+import { useBookmarks } from '../hooks/useBookmarks';
 
 export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const { toggleBookmark, isBookmarked } = useBookmarks();
 
   const filteredCourses = MOCK_COURSES.filter((course) => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -41,7 +43,10 @@ export default function ExplorePage() {
 
         {/* Search & Filters Bar */}
         <div className="flex flex-col md:flex-row gap-4 mb-8">
-          <div className="relative flex-1">
+          <motion.div 
+            whileHover={{ scale: 1.01 }}
+            className="relative flex-1"
+          >
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
             <input
               type="text"
@@ -50,9 +55,11 @@ export default function ExplorePage() {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full glass-dark rounded-2xl py-4 pl-12 pr-4 text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent-primary/30 focus:border-accent-primary/50 transition-all duration-300 shadow-xl border-white/5"
             />
-          </div>
+          </motion.div>
           
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => setIsFilterOpen(!isFilterOpen)}
             className={cn(
               "flex items-center gap-2 px-6 py-4 rounded-2xl border font-bold transition-all duration-300 shadow-xl",
@@ -63,7 +70,7 @@ export default function ExplorePage() {
           >
             <Filter className="w-5 h-5" />
             Filters
-          </button>
+          </motion.button>
 
           <div className="relative">
             <select className="appearance-none glass-dark rounded-2xl py-4 pl-6 pr-12 text-text-primary font-bold focus:outline-none focus:ring-2 focus:ring-accent-primary/30 transition-all cursor-pointer shadow-xl border-white/5">
@@ -78,7 +85,9 @@ export default function ExplorePage() {
 
         {/* Category Pills */}
         <div className="flex items-center gap-3 overflow-x-auto pb-4 mb-10 no-scrollbar">
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => setSelectedCategory('All')}
             className={cn(
               "px-6 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all duration-300 border",
@@ -88,10 +97,12 @@ export default function ExplorePage() {
             )}
           >
             All
-          </button>
+          </motion.button>
           {CATEGORIES.map((cat) => (
-            <button
+            <motion.button
               key={cat}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => setSelectedCategory(cat)}
               className={cn(
                 "px-6 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all duration-300 border",
@@ -101,7 +112,7 @@ export default function ExplorePage() {
               )}
             >
               {cat}
-            </button>
+            </motion.button>
           ))}
         </div>
 
@@ -150,7 +161,12 @@ export default function ExplorePage() {
             {filteredCourses.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                 {filteredCourses.map((course) => (
-                  <CourseCard key={course.id} course={course} />
+                  <CourseCard 
+                    key={course.id} 
+                    course={course} 
+                    isBookmarked={isBookmarked(course.id)}
+                    onBookmarkToggle={toggleBookmark}
+                  />
                 ))}
               </div>
             ) : (

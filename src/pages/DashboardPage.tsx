@@ -3,21 +3,39 @@ import { BookOpen, Clock, Trophy, Flame, PlayCircle, ArrowRight, Star } from 'lu
 import { MOCK_COURSES, ROADMAPS } from '../lib/constants';
 import { CourseCard } from '../components/course/CourseCard';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import { useProgress } from '../hooks/useProgress';
+import { useBookmarks } from '../hooks/useBookmarks';
 
 export default function DashboardPage() {
-  const continueLearning = MOCK_COURSES.slice(0, 2);
+  const { profile } = useAuth();
+  const { progress } = useProgress();
+  const { toggleBookmark, isBookmarked } = useBookmarks();
+  
+  const continueLearning = MOCK_COURSES.filter(c => 
+    progress.some(p => p.course_id === c.id && !p.is_completed)
+  ).slice(0, 2);
+
+  if (continueLearning.length === 0) {
+    continueLearning.push(...MOCK_COURSES.slice(0, 2));
+  }
+
   const recommended = MOCK_COURSES.slice(2, 5);
 
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const firstName = profile?.full_name?.split(' ')[0] || 'Student';
+
   const stats = [
-    { label: 'Courses Enrolled', value: '12', icon: BookOpen, color: 'text-accent-primary' },
-    { label: 'Hours Learned', value: '48.5', icon: Clock, color: 'text-accent-success' },
-    { label: 'Courses Completed', value: '4', icon: Trophy, color: 'text-accent-warning' },
-    { label: 'Current Streak', value: '5 days', icon: Flame, color: 'text-accent-danger' },
+    { label: 'Courses Enrolled', value: profile?.saved_courses?.length || '0', icon: BookOpen, color: 'text-accent-primary' },
+    { label: 'Hours Learned', value: profile?.total_hours || '0', icon: Clock, color: 'text-accent-success' },
+    { label: 'Courses Completed', value: progress.filter(p => p.is_completed).length.toString(), icon: Trophy, color: 'text-accent-warning' },
+    { label: 'Current Streak', value: `${profile?.streak || 0} days`, icon: Flame, color: 'text-accent-danger' },
   ];
 
   return (
     <div className="min-h-screen pb-20">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-width-container px-6">
         {/* Welcome Header */}
         <div className="mb-12">
           <motion.h1 
@@ -25,7 +43,7 @@ export default function DashboardPage() {
             animate={{ opacity: 1, x: 0 }}
             className="text-4xl md:text-6xl font-display font-extrabold text-text-primary mb-4 tracking-tight"
           >
-            Good morning, <span className="gradient-text">Nandish</span> 👋
+            {greeting}, <span className="gradient-text">{firstName}</span> 👋
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -33,7 +51,7 @@ export default function DashboardPage() {
             transition={{ delay: 0.1 }}
             className="text-lg text-text-secondary flex items-center gap-2 font-medium"
           >
-            You're on a 5-day streak. Keep it up! <Flame className="w-5 h-5 text-accent-primary fill-current drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]" />
+            You're on a {profile?.streak || 0}-day streak. Keep it up! <Flame className="w-5 h-5 text-accent-primary fill-current drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]" />
           </motion.p>
         </div>
 
@@ -44,8 +62,10 @@ export default function DashboardPage() {
               key={stat.label}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -5, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               transition={{ delay: i * 0.1 }}
-              className="p-8 rounded-[2rem] glass-dark border-white/5 hover:border-accent-primary/30 transition-all duration-500 group shadow-xl"
+              className="p-8 rounded-[2rem] glass-dark border-white/5 hover:border-accent-primary/30 transition-all duration-500 group shadow-xl cursor-pointer"
             >
               <div className="flex items-center justify-between mb-6">
                 <div className={`p-3 rounded-2xl bg-white/5 group-hover:bg-accent-primary group-hover:text-black transition-all duration-500 ${stat.color}`}>
@@ -67,13 +87,18 @@ export default function DashboardPage() {
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {continueLearning.map((course) => (
-              <CourseCard 
-                key={course.id} 
-                course={course} 
-                completionPercent={Math.floor(Math.random() * 80) + 10} 
-              />
-            ))}
+            {continueLearning.map((course) => {
+              const courseProgress = progress.find(p => p.course_id === course.id);
+              return (
+                <CourseCard 
+                  key={course.id} 
+                  course={course} 
+                  isBookmarked={isBookmarked(course.id)}
+                  onBookmarkToggle={toggleBookmark}
+                  completionPercent={courseProgress?.completion_percent || 0} 
+                />
+              );
+            })}
           </div>
         </section>
 
@@ -87,7 +112,12 @@ export default function DashboardPage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {recommended.map((course) => (
-              <CourseCard key={course.id} course={course} />
+              <CourseCard 
+                key={course.id} 
+                course={course} 
+                isBookmarked={isBookmarked(course.id)}
+                onBookmarkToggle={toggleBookmark}
+              />
             ))}
           </div>
         </section>
@@ -102,7 +132,12 @@ export default function DashboardPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {ROADMAPS.slice(0, 2).map((roadmap) => (
-              <div key={roadmap.id} className="p-8 rounded-[2rem] bg-white/5 border border-white/5 flex gap-6 hover:border-accent-primary/30 hover:shadow-xl transition-all duration-500 group">
+              <motion.div 
+                key={roadmap.id}
+                whileHover={{ y: -5, scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                className="p-8 rounded-[2rem] bg-white/5 border border-white/5 flex gap-6 hover:border-accent-primary/30 hover:shadow-xl transition-all duration-500 group cursor-pointer"
+              >
                 <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center text-accent-primary shrink-0 shadow-sm group-hover:bg-accent-primary group-hover:text-black transition-all duration-500">
                   <BookOpen className="w-8 h-8" />
                 </div>
@@ -117,7 +152,7 @@ export default function DashboardPage() {
                     Resume Roadmap <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </section>

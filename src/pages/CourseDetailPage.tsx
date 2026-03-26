@@ -9,10 +9,18 @@ import { MOCK_COURSES } from '../lib/constants';
 import { formatDuration, formatPrice, cn } from '../lib/utils';
 import { RatingStars } from '../components/shared/RatingStars';
 import { ProviderBadge } from '../components/course/CourseProviderBadge';
+import { CourseThumbnail } from '../components/course/CourseThumbnail';
+import { useBookmarks } from '../hooks/useBookmarks';
+import { useProgress } from '../hooks/useProgress';
 
 export default function CourseDetailPage() {
   const { id } = useParams();
   const course = MOCK_COURSES.find(c => c.id === id) || MOCK_COURSES[0];
+  const { toggleBookmark, isBookmarked } = useBookmarks();
+  const { getCourseProgress } = useProgress();
+  
+  const progress = getCourseProgress(course.id);
+  const bookmarked = isBookmarked(course.id);
 
   const tabs = ['Overview', 'Curriculum', 'Instructor', 'Reviews'];
 
@@ -53,11 +61,11 @@ export default function CourseDetailPage() {
 
             {/* Preview Image */}
             <div className="relative aspect-video rounded-2xl overflow-hidden border border-bg-border mb-12 group">
-              <img
+              <CourseThumbnail
                 src={course.thumbnail}
                 alt={course.title}
+                category={course.category}
                 className="w-full h-full object-cover"
-                referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center text-black shadow-glow">
@@ -189,11 +197,32 @@ export default function CourseDetailPage() {
                   <Share2 className="w-4 h-4" />
                   Share
                 </button>
-                <button className="flex-1 flex items-center justify-center gap-2 text-sm font-bold text-text-secondary hover:text-text-primary transition-colors">
-                  <Heart className="w-4 h-4" />
-                  Bookmark
+                <button 
+                  onClick={() => toggleBookmark(course.id)}
+                  className={cn(
+                    "flex-1 flex items-center justify-center gap-2 text-sm font-bold transition-colors",
+                    bookmarked ? "text-accent-primary" : "text-text-secondary hover:text-text-primary"
+                  )}
+                >
+                  <Heart className={cn("w-4 h-4", bookmarked && "fill-current")} />
+                  {bookmarked ? 'Bookmarked' : 'Bookmark'}
                 </button>
               </div>
+
+              {progress && (
+                <div className="mt-8 space-y-2">
+                  <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider">
+                    <span className="text-text-secondary">Your Progress</span>
+                    <span className="text-accent-success">{progress.completion_percent}%</span>
+                  </div>
+                  <div className="h-1.5 w-full bg-bg-border rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-accent-success transition-all duration-500" 
+                      style={{ width: `${progress.completion_percent}%` }}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </aside>
         </div>
